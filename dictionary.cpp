@@ -34,6 +34,18 @@ void insertWord(Trie *&root, const string &word, const string &meaning) {
     return;
 }
 
+string searchWord(Trie *root, const string &word) {
+    if (!root) return "Dictionary is empty. Please input some words";
+    Trie *temp = root;
+    for (int i = 0; i < word.length(); i++) {
+        temp = temp -> wordMap[word[i]];
+        if (!temp) return "Word not found.";
+    }
+    //If it is the end of a valid word stored in dictionary, return its meaning
+    if (temp -> isEnd) return temp -> meaning;
+    return "Word not found.";
+}
+
 int main() {
     int choice;
     cout << "Enter your response: " << endl << "1. Find a words meaning" << "2. Insert a word into dictionary"
