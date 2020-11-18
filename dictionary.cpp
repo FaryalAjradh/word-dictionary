@@ -1,5 +1,7 @@
 #include <iostream>
+#include <stdlib.h>
 #include <unordered_map>
+#include <string>
 
 using namespace std;
 
@@ -46,32 +48,45 @@ string searchWord(Trie *root, const string &word) {
     return "Word not found.";
 }
 
+void prefixSearch(Trie *root, const string &prefix) {
+
+}
+
 int main() {
-    int choice;
-    cout << "Enter your response: " << endl << "1. Find a words meaning" << "2. Insert a word into dictionary"
-        << endl << "3. View the dictionary" << endl << "4. Quit" << endl;
+    int choice = 0;
     Trie *root = NULL;
-    switch(choice) {
-        case 1: { 
-                    string word;
-                    cout << "Enter the word: ";
-                    cin >> word;
-                    cout << "Meaning: " << searchWord(root, word); 
-                }
-                break;
-        case 2: { 
-                    string word, meaning;
-                    cout << "Enter the word: ";
-                    cin >> word;
-                    cout << "Enter its meaning: ";
-                    cin >> meaning;
-                    insertWord(root, word, meaning); 
-                }   
-                break;
-        case 3: viewWords();
-                break;
-        case 4: exit(0);
-        defaut: cout << "Wrong response. Please try again.";
+    while(choice != 4) {
+        cout << "Operations available: " << endl << "1. Find a words' meaning" << endl << "2. Insert a word into dictionary"
+                << endl << "3. Find words with a particular prefix" << endl << "4. Quit" << endl << "Enter your response: ";
+        cin >> choice;
+        switch(choice) {
+            case 1: { 
+                        string word;
+                        cout << "Enter the word: ";
+                        cin >> word;
+                        cout << searchWord(root, word); 
+                        break;
+                    }                  
+            case 2: { 
+                        string word, meaning;
+                        cout << "Enter the word: ";
+                        cin >> word;
+                        cout << "Enter its meaning: ";
+                        cin >> meaning;
+                        // getline(cin, meaning, '\n');
+                        insertWord(root, word, meaning); 
+                        break;
+                    }    
+            case 3: {
+                        string prefix;
+                        cout << "Enter the prefix: ";
+                        cin >> prefix;
+                        prefixSearch(root, prefix); 
+                        break;
+                    }
+            case 4: exit(0);
+            default: cout << "Wrong response. Please try again.";
+        }
     }
 
     return 0;
