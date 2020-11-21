@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <unordered_map>
-#include <string>
+#include <string.h>
 
 using namespace std;
 
@@ -32,7 +32,6 @@ void insertWord(Trie *&root, const string &word, const string &meaning) {
     //Make the last letters' Trie nodes; isEnd as true and give it the words' meaning
     temp -> isEnd = true;
     temp -> meaning = meaning;
-
     return;
 }
 
@@ -55,26 +54,26 @@ void prefixSearch(Trie *root, const string &prefix) {
 int main() {
     int choice = 0;
     Trie *root = NULL;
-    while(choice != 4) {
+    while (choice <= 4) {
         cout << "Operations available: " << endl << "1. Find a words' meaning" << endl << "2. Insert a word into dictionary"
-                << endl << "3. Find words with a particular prefix" << endl << "4. Quit" << endl << "Enter your response: ";
+            << endl << "3. Find words with a particular prefix" << endl << "4. Quit" << endl << "Enter your response: ";
         cin >> choice;
         switch(choice) {
-            case 1: { 
+            case 1: {
                         string word;
                         cout << "Enter the word: ";
                         cin >> word;
-                        cout << searchWord(root, word); 
+                        cout << "Here it is: " << searchWord(root, word) << endl;; 
                         break;
-                    }                  
+                    }                
             case 2: { 
                         string word, meaning;
                         cout << "Enter the word: ";
                         cin >> word;
                         cout << "Enter its meaning: ";
-                        cin >> meaning;
-                        // getline(cin, meaning, '\n');
+                        getline(cin >> ws, meaning);
                         insertWord(root, word, meaning); 
+                        cout << word << " has been inserted." << endl;
                         break;
                     }    
             case 3: {
