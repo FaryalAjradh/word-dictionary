@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <unordered_map>
+#include <vector>
 #include <string.h>
 
 using namespace std;
@@ -47,43 +48,77 @@ string searchWord(Trie *root, const string &word) {
     return "Word not found.";
 }
 
-void prefixSearch(Trie *root, const string &prefix) {
+void autoComplete(Trie *current, vector <string> &available_words, const string &prefix) {
+    //base cases
+    if(!current) return;
+    if(current -> isEnd) available_words.push_back(prefix);
+    unordered_map <char, Trie*> remaining_words = current -> wordMap;
+    for (auto i: remaining_words) 
+        autoComplete(remaining_words[i.first], available_words, prefix + i.first);        
+}
 
+vector <string> prefixSearch(Trie *root, string &prefix) {
+    vector <string> available_words;
+    if(!root) return available_words;
+    Trie *temp = root;
+    for (int i = 0; i < prefix.length(); i++) {
+        temp = temp -> wordMap[prefix[i]];
+        //if any one of the letters of prefix is not present
+        if (!temp) return available_words;      
+    }
+    //if prefix is present, we find the possible words
+    autoComplete(temp, available_words, prefix);
+    return available_words;
+}
+
+bool checkSpelling() {
+    return true;
 }
 
 int main() {
     int choice = 0;
     Trie *root = NULL;
-    while (choice <= 4) {
+    while (choice <= 5) {
         cout << "Operations available: " << endl << "1. Find a words' meaning" << endl << "2. Insert a word into dictionary"
-            << endl << "3. Find words with a particular prefix" << endl << "4. Quit" << endl << "Enter your response: ";
+            << endl << "3. Find words with a particular prefix" << endl << "4. Check spelling of a word" << endl << "5. Quit" << endl << "Enter your response: ";
         cin >> choice;
         switch(choice) {
             case 1: {
-                        string word;
-                        cout << "Enter the word: ";
-                        cin >> word;
-                        cout << "Here it is: " << searchWord(root, word) << endl;; 
-                        break;
-                    }                
+                string word;
+                cout << "Enter the word: ";
+                cin >> word;
+                cout << "Here it is: " << searchWord(root, word) << endl;; 
+                break;
+            }                
             case 2: { 
-                        string word, meaning;
-                        cout << "Enter the word: ";
-                        cin >> word;
-                        cout << "Enter its meaning: ";
-                        getline(cin >> ws, meaning);
-                        insertWord(root, word, meaning); 
-                        cout << word << " has been inserted." << endl;
-                        break;
-                    }    
+                string word, meaning;
+                cout << "Enter the word: ";
+                cin >> word;
+                cout << "Enter its meaning: ";
+                getline(cin >> ws, meaning);
+                insertWord(root, word, meaning); 
+                cout << word << " has been inserted." << endl;
+                break;
+            }    
             case 3: {
-                        string prefix;
-                        cout << "Enter the prefix: ";
-                        cin >> prefix;
-                        prefixSearch(root, prefix); 
-                        break;
-                    }
-            case 4: exit(0);
+                string prefix;
+                cout << "Enter the prefix: ";
+                cin >> prefix;
+                vector <string> possible_words = prefixSearch(root, prefix); 
+                for(auto i = possible_words.begin(); i != possible_words.end(); i++)
+                    cout << *i << " ";
+                cout << endl;
+                
+                break;
+            }
+            case 4: {
+                string word;
+                cout << "Enter the word: ";
+                cin >> word;
+                // if(checkSpelling(root, word)) cout << "Your word is correctly spelt." << endl;
+                // else cout << "Your word is misspelt."
+            }
+            case 5: exit(0);
             default: cout << "Wrong response. Please try again.";
         }
     }
