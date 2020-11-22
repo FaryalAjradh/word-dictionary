@@ -6,6 +6,9 @@
 
 using namespace std;
 
+#define UNDERLINE_ON "\033[4m"
+#define UNDERLINE_OFF "\033[0m"
+
 struct Trie
 {
     unordered_map<char, Trie*> wordMap;
@@ -36,7 +39,7 @@ void insertWord(Trie *&root, const string &word, const string &meaning) {
     return;
 }
 
-string searchWord(Trie *root, const string &word) {
+string searchMeaning(Trie *root, const string &word) {
     if (!root) return "Dictionary is empty. Please input some words";
     Trie *temp = root;
     for (int i = 0; i < word.length(); i++) {
@@ -71,13 +74,19 @@ vector <string> prefixSearch(Trie *root, string &prefix) {
     return available_words;
 }
 
-bool checkSpelling() {
-    return true;
+bool searchWord(Trie *root, string &word) {
+    Trie *temp = root;
+    for (int i = 0; i < word.length(); i++) {
+        temp = temp -> wordMap[word[i]];
+        if (!temp) return false;
+    }
+    return temp -> isEnd;
 }
 
 int main() {
     int choice = 0;
     Trie *root = NULL;
+    cout << "--------------------------------------------" << endl;
     while (choice <= 5) {
         cout << "Operations available: " << endl << "1. Find a words' meaning" << endl << "2. Insert a word into dictionary"
             << endl << "3. Find words with a particular prefix" << endl << "4. Check spelling of a word" << endl << "5. Quit" << endl << "Enter your response: ";
@@ -87,7 +96,7 @@ int main() {
                 string word;
                 cout << "Enter the word: ";
                 cin >> word;
-                cout << "Here it is: " << searchWord(root, word) << endl;; 
+                cout << "Here it is: " << searchMeaning(root, word) << endl << "--------------------------------------------" << endl;
                 break;
             }                
             case 2: { 
@@ -97,7 +106,7 @@ int main() {
                 cout << "Enter its meaning: ";
                 getline(cin >> ws, meaning);
                 insertWord(root, word, meaning); 
-                cout << word << " has been inserted." << endl;
+                cout << word << " has been inserted." << endl << "--------------------------------------------" << endl;
                 break;
             }    
             case 3: {
@@ -105,18 +114,39 @@ int main() {
                 cout << "Enter the prefix: ";
                 cin >> prefix;
                 vector <string> possible_words = prefixSearch(root, prefix); 
+                cout << "Available words: ";
                 for(auto i = possible_words.begin(); i != possible_words.end(); i++)
                     cout << *i << " ";
-                cout << endl;
+                cout << endl << "--------------------------------------------" << endl;
                 
                 break;
             }
             case 4: {
-                string word;
-                cout << "Enter the word: ";
-                cin >> word;
-                // if(checkSpelling(root, word)) cout << "Your word is correctly spelt." << endl;
-                // else cout << "Your word is misspelt."
+                string word = "";
+                cout << "Correctly spelt words will be printed as it is and mispelt words will be underlined." << endl;
+                cout << "Enter the word(s): ";
+                cin >> ws;
+                while(char letter = getchar()) {
+                    //if enter is hit, we check the last word
+                    if (letter == '\n') {
+                        //if word is correctly spelt, we print it. if not, we print underlined word
+                        searchWord(root, word) ? cout << word : cout << UNDERLINE_ON << word << UNDERLINE_OFF;
+                        cout << letter << "--------------------------------------------" << endl;
+                        break;
+                    } 
+                    //if space is hit, we evaluate previous word
+                    else if (letter == ' ') {
+                        //if word is correctly spelt, we print it. if not, we print underlined word
+                        searchWord(root, word) ? cout << word : cout << UNDERLINE_ON << word << UNDERLINE_OFF;
+                        //now we reset word to empty to take in new consequent word
+                        word = "";
+                        //we print space (which is letter here) for ease in readability
+                        cout << letter;
+                    }
+                    //when letters of word are in input, we concatenate them to our query string
+                    else word += letter;
+                }
+                break;
             }
             case 5: exit(0);
             default: cout << "Wrong response. Please try again.";
