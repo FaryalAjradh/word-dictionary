@@ -96,6 +96,7 @@ int main() {
                 string word;
                 cout << "Enter the word: ";
                 cin >> word;
+                system("cls");
                 cout << "Here it is: " << searchMeaning(root, word) << endl << "--------------------------------------------" << endl;
                 break;
             }                
@@ -106,6 +107,7 @@ int main() {
                 cout << "Enter its meaning: ";
                 getline(cin >> ws, meaning);
                 insertWord(root, word, meaning); 
+                system("cls");
                 cout << word << " has been inserted." << endl << "--------------------------------------------" << endl;
                 break;
             }    
@@ -114,9 +116,13 @@ int main() {
                 cout << "Enter the prefix: ";
                 cin >> prefix;
                 vector <string> possible_words = prefixSearch(root, prefix); 
-                cout << "Available words: ";
-                for(auto i = possible_words.begin(); i != possible_words.end(); i++)
-                    cout << *i << " ";
+                system("cls");
+                if(possible_words.size() == 0) cout << "No words with the prefix \"" << prefix << "\" are found." << endl;
+                else {
+                    cout << "Available words: ";
+                    for(auto i = possible_words.begin(); i != possible_words.end(); i++)
+                        cout << *i << " ";
+                }
                 cout << endl << "--------------------------------------------" << endl;
                 
                 break;
@@ -149,7 +155,7 @@ int main() {
                 break;
             }
             case 5: exit(0);
-            default: cout << "Wrong response. Please try again.";
+            default: cout << endl << "Wrong response. Please try again.";
         }
     }
 
